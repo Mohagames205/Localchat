@@ -1,5 +1,17 @@
 name: LocalChat
 main: mohagames\localchat\main
-version: 0.0.1
+version: 1.0.0
 api: 3.0.0
 author: Mohagames205
+
+commands:
+  localchat:
+    description: Main localchat command
+  lc:
+    description: Main localchat command
+
+permissions:
+  lc.cmd.toggle:
+    description: Allows the player to use the localchat toggle command
+  lc.cmd.setdistance:
+    description: Allows the player to use the localchat setdistance command

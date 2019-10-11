@@ -16,37 +16,97 @@ use pocketmine\event\player\PlayerChatEvent;
 
 class Main extends PluginBase implements Listener{
 
-    public $near;
-
-    public function onLoad(): void
-    {
-        $this->getLogger()->info(TextFormat::WHITE . "I've been loaded!");
-    }
+    public $config;
 
     public function onEnable(): void
     {
+        $this->config = new Config($this->getDataFolder() . "localchat.yml", Config::YAML, array("distance" => 15, "toggle" => false));
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getLogger()->info(TextFormat::DARK_GREEN . "biep boep");
+    }
+
+    public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool
+    {
+        switch ($command->getName()){
+            case "localchat":
+            case "lc":
+                if(isset($args[0])){
+                    switch($args[0]){
+                        case "setdistance":
+                            if($sender->hasPermission("lc.cmd.setdistance")) {
+                                if (isset($args[1])) {
+                                    $distance = $args[1];
+                                    if (is_numeric($distance)) {
+                                        $this->config->set("distance", (int)$distance);
+                                        $this->config->save();
+                                        $sender->sendMessage("§aDe chat afstand is succesvol ingesteld op §2" . $args[1] . " §ablocks.");
+                                    } else {
+                                        $sender->sendMessage("§4De gegeven afstand is geen nummer.");
+                                    }
+                                } else {
+                                    $sender->sendMessage("§4Gelieve de afstand te specifieren.");
+                                }
+                            }
+                            else{
+                                $sender->sendMessage("§4U bent niet bevoegd om deze command te gebruiken.");
+                            }
+                            break;
+
+                        case "toggle":
+                            if($sender->hasPermission("lc.cmd.toggle")) {
+                                if ($this->config->get("toggle")) {
+                                    $this->config->set("toggle", false);
+                                    $this->config->save();
+                                    $sender->sendMessage("§aLocalchat is uitgeschakeld.");
+                                } else {
+                                    $this->config->set("toggle", true);
+                                    $this->config->save();
+                                    $sender->sendMessage("§aLocalchat is ingeschakeld");
+                                }
+                            }
+                            else{
+                                $sender->sendMessage("§4U bent niet bevoegd om deze command te gebruiken.");
+                            }
+
+                            break;
+
+                        default:
+                            $sender->sendMessage("§4Beschikbare commands:\n§c/lc setdistance §4Stelt de chat afstand in\n§c/lc toggle §4Schakelt localchat in of uit");
+                            break;
+                    }
+
+
+                }
+                else{
+                    $sender->sendMessage("§4Beschikbare commands:\n§c/lc setdistance §4Stelt de chat afstand in\n§c/lc toggle §4Schakelt localchat in of uit");
+                }
+
+                return true;
+
+
+            default:
+                return false;
+
+        }
     }
 
     public function bericht(PlayerChatEvent $event){
         $player = $event->getPlayer();
         $near = [];
-        foreach($event->getRecipients() as $pr){
-            if ($pr instanceof Player) {
-                $dist = $player->distance($pr);
-                $this->near = 15;
-                if($dist <= $this->near AND $pr->getLevel() === $player->getLevel()){
-                    $near[] = $pr;
+        if ($this->config->get("toggle")) {
+            foreach ($event->getRecipients() as $pr) {
+                if ($pr instanceof Player) {
+                    $dist = $player->distance($pr);
+                    $config_distance = $this->config->get("distance");
+                    if ($dist <= $config_distance AND $pr->getLevel() === $player->getLevel()) {
+                        $near[] = $pr;
+                    }
                 }
             }
-        }
-
-        if(count($near) == 0){
-            $event->setCancelled();
-        }
-        else{
-            $event->setRecipients($near);
+            if (count($near) == 0) {
+                $event->setCancelled();
+            } else {
+                $event->setRecipients($near);
+            }
         }
     }
 }
