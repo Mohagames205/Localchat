@@ -91,7 +91,7 @@ class Main extends PluginBase implements Listener{
 
     public function bericht(PlayerChatEvent $event){
         $player = $event->getPlayer();
-        $near = [];
+        $near = ["CONSOLE"];
         if ($this->config->get("toggle")) {
             foreach ($event->getRecipients() as $pr) {
                 if ($pr instanceof Player) {
