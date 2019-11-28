@@ -106,7 +106,7 @@ class Main extends PluginBase implements Listener{
                 $event->setCancelled();
             } else {
                 $event->setRecipients($near);
-                $this->getServer()->getLogger()->info("§a" . "[" . $player->getName() . "] > " . $event->getMessage());
+                $this->getServer()->getLogger()->info("[" . $player->getName() . "] > " . $event->getMessage());
             }
         }
     }
