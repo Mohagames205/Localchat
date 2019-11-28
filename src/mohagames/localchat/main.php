@@ -91,7 +91,7 @@ class Main extends PluginBase implements Listener{
 
     public function bericht(PlayerChatEvent $event){
         $player = $event->getPlayer();
-        $near = ["CONSOLE"];
+        $near = [];
         if ($this->config->get("toggle")) {
             foreach ($event->getRecipients() as $pr) {
                 if ($pr instanceof Player) {
@@ -106,6 +106,7 @@ class Main extends PluginBase implements Listener{
                 $event->setCancelled();
             } else {
                 $event->setRecipients($near);
+                $this->getServer()->getLogger()->info("§a" . "[" . $player->getName() . "] > " . $event->getMessage());
             }
         }
     }
