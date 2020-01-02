@@ -1,3 +1,5 @@
+[![Discord](https://img.shields.io/discord/662272650793713664?logo=discord)](https://discord.gg/aa6ThSM)
+
 # Localchat
 
 This plugin allows you to limit the chat to the Players in your proximity.
@@ -13,3 +15,7 @@ This plugin allows you to limit the chat to the Players in your proximity.
 ## Downloads 
 * **Stable** https://github.com/Mohagames205/Localchat/releases
 * **Latest** https://poggit.pmmp.io/ci/Mohagames205/Localchat
+
+## Support
+* **Discord** 
+* **Issue Track**
