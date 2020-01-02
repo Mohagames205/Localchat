@@ -17,5 +17,5 @@ This plugin allows you to limit the chat to the Players in your proximity.
 * **Latest** https://poggit.pmmp.io/ci/Mohagames205/Localchat
 
 ## Support
-* **Discord** 
-* **Issue Track**
+* **Discord** https://discord.gg/aa6ThSM
+* **Issue Tracker**
