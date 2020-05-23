@@ -1,5 +1,5 @@
 name: LocalChat
-main: mohagames\localchat\main
+main: mohagames\localchat\Main
 version: 1.0.0
 api: 3.0.0
 author: Mohagames205
