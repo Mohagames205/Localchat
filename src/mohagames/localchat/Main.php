@@ -2,6 +2,7 @@
 
 namespace mohagames\localchat;
 
+use _64FF00\PureChat\PureChat;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\command\Command;
@@ -20,7 +21,7 @@ class Main extends PluginBase implements Listener{
 
     public function onEnable(): void
     {
-        $this->config = new Config($this->getDataFolder() . "localchat.yml", Config::YAML, array("distance" => 15, "toggle" => false));
+        $this->config = new Config($this->getDataFolder() . "localchat.yml", Config::YAML, array("global-suffix" => "!!","global-prefix" => "[GLOBAL] {player} > {msg}","distance" => 15, "toggle" => false));
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
     }
 
@@ -89,6 +90,10 @@ class Main extends PluginBase implements Listener{
         }
     }
 
+    /**
+     * @priority LOW
+     * @param PlayerChatEvent $event
+     */
     public function bericht(PlayerChatEvent $event){
         $player = $event->getPlayer();
         $near = [];
@@ -102,6 +107,20 @@ class Main extends PluginBase implements Listener{
                     }
                 }
             }
+            $suffix = $this->config->get("global-suffix");
+            if($this->startsWith($event->getMessage(), $suffix))
+            {
+                /** @var ?PureChat $pc  */
+                $pc = $this->getServer()->getPluginManager()->getPlugin("PureChat");
+
+                $pc_prefix = !is_null($pc) ? $pc->getPrefix($player) : null;
+
+                $prefix = $this->config->get("global-prefix");
+                $message = str_replace(["{msg}", "{player}", "{pc_prefix}"], [$event->getMessage(), $player->getName(), $pc_prefix], $prefix);
+                $event->setCancelled();
+                $player->getServer()->broadcastMessage($message);
+                return;
+            }
             if (count($near) == 0) {
                 $event->setCancelled();
             } else {
@@ -110,4 +129,12 @@ class Main extends PluginBase implements Listener{
             }
         }
     }
+
+
+    public function startsWith($haystack, $needle)
+    {
+        $length = strlen($needle);
+        return (substr($haystack, 0, $length) === $needle);
+    }
+
 }
