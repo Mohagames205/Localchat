@@ -3,6 +3,7 @@
 namespace mohagames\localchat;
 
 use _64FF00\PureChat\PureChat;
+use _64FF00\PurePerms\PurePerms;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\command\Command;
@@ -110,13 +111,13 @@ class Main extends PluginBase implements Listener{
             $suffix = $this->config->get("global-suffix");
             if($this->startsWith($event->getMessage(), $suffix))
             {
-                /** @var ?PureChat $pc  */
-                $pc = $this->getServer()->getPluginManager()->getPlugin("PureChat");
+                /** @var PurePerms $pm  */
+                $pm = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
 
-                $pc_prefix = !is_null($pc) ? $pc->getPrefix($player) : null;
+                $pm_group = !is_null($pm) ? $pm->getUserDataMgr()->getGroup($player) : null;
 
                 $prefix = $this->config->get("global-prefix");
-                $message = str_replace(["{msg}", "{player}", "{pc_prefix}"], [$event->getMessage(), $player->getName(), $pc_prefix], $prefix);
+                $message = str_replace(["{msg}", "{player}", "{group}"], [$event->getMessage(), $player->getName(), $pm_group], $prefix);
                 $event->setCancelled();
                 $player->getServer()->broadcastMessage($message);
                 return;
